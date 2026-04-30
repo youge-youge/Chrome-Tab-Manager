@@ -240,8 +240,7 @@
       fireAndRemove(cards, ids, () => {
         allTabs = allTabs.filter(t => !ids.includes(t.id));
         ids.forEach(id => selectedIds.delete(id));
-        g.classList.add('removing');
-        g.addEventListener('animationend', () => g.remove(), { once: true });
+        renderAll();  // Re-render to auto-remove empty groups
         updateStats(allTabs.length); setBadge(allTabs.length); maybeCheer();
       });
     });

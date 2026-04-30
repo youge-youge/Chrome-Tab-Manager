@@ -330,13 +330,13 @@
   background: var(--bg2);
   border: 1.5px solid var(--b0);
   border-radius: var(--r4);
-  padding: 7px 6px 6px;
+  padding: 6px 6px 6px 6px;
   cursor: pointer;
-  min-height: 64px;
-  max-height: 85px;
+  min-height: 68px;
+  max-height: 90px;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
   transition: border-color var(--t1), background var(--t1),
               transform var(--t2) var(--spring), box-shadow var(--t2) ease;
   overflow: visible; /* allow firework particles to escape */
@@ -376,17 +376,17 @@
   line-height: 1.38;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
   overflow: hidden;
-  padding-right: 13px;
+  padding-right: 2px;
   flex: 1;
 }
 
 /* single-close × */
 .cx {
-  position: absolute; bottom: 4px; right: 4px;
-  width: 16px; height: 16px;
+  position: absolute; top: 3px; right: 3px;
+  width: 14px; height: 14px;
   border: none; background: transparent;
-  color: var(--tx2); font-size: 13px; line-height: 1;
-  cursor: pointer; border-radius: 3px;
+  color: var(--tx2); font-size: 12px; line-height: 1;
+  cursor: pointer; border-radius: 2px;
   display: flex; align-items: center; justify-content: center;
   opacity: 0;
   transition: opacity var(--t1), background var(--t1), color var(--t1);
