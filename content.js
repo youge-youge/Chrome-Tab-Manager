@@ -83,8 +83,8 @@
   document.addEventListener('mousemove', e => {
     if (!drag) return;
     dMoved = true;
-    const x = Math.max(0, Math.min(innerWidth  - 52, e.clientX - dox));
-    const y = Math.max(0, Math.min(innerHeight - 52, e.clientY - doy));
+    const x = Math.max(0, Math.min(innerWidth  - 44, e.clientX - dox));  // Updated for 44px FAB size
+    const y = Math.max(0, Math.min(innerHeight - 44, e.clientY - doy));  // Updated for 44px FAB size
     fab.style.left = x + 'px'; fab.style.top = y + 'px';
     fab.style.right = 'auto'; fab.style.bottom = 'auto';
     placePanelNearFab(x, y);
@@ -126,12 +126,12 @@
   /* ── Panel positioning ────────────────────────────────────────── */
   function placePanelNearFab(fx, fy) {
     if (!panelOpen) return;
-    const PW = 520;
-    let left = fx - PW - 14;
-    if (left < 6) left = fx + 60;
+    const PW = 480;  // Updated to match new panel width
+    let left = fx - PW - 12;
+    if (left < 6) left = fx + 54;  // Updated for smaller FAB (44px)
     if (left + PW > innerWidth - 6) left = innerWidth - PW - 6;
-    const panH = panel.getBoundingClientRect().height || 400;
-    let top = fy + 52 - panH;
+    const panH = panel.getBoundingClientRect().height || 380;
+    let top = fy + 44 - panH;  // Updated for smaller FAB
     if (top < 6) top = 6;
     if (top + panH > innerHeight - 6) top = innerHeight - panH - 6;
     panel.style.cssText = `right:auto;bottom:auto;left:${left}px;top:${top}px;`;
@@ -313,8 +313,6 @@
     const SPARKS  = 14;   // thin sparks
     const layer   = document.documentElement; // attach to real DOM so fixed pos works
 
-    function launch(el) { layer.appendChild(el); el.addEventListener('animationend', () => el.remove(), { once: true }); }
-
     // Round particles
     for (let i = 0; i < COUNT; i++) {
       const angle  = (i / COUNT) * Math.PI * 2 + (Math.random() - 0.5) * 0.5;
@@ -448,9 +446,9 @@
     `;
     shadow.appendChild(toast);
 
-    // Reposition toast near FAB
+    // Reposition toast near FAB (toast is 268px wide, position above/left of FAB)
     const fr = fab.getBoundingClientRect();
-    toast.style.cssText = `right:auto;bottom:auto;left:${Math.max(6, fr.left - 268 - 10)}px;top:${Math.max(6, fr.top - 150)}px;`;
+    toast.style.cssText = `right:auto;bottom:auto;left:${Math.max(6, fr.left - 268 - 8)}px;top:${Math.max(6, fr.top - 130)}px;`;
 
     requestAnimationFrame(() => {
       const bar = $('tbar');
@@ -475,7 +473,9 @@
   function dismissToast(el, cb) {
     if (!el) { cb?.(); return; }
     el.classList.add('out');
-    el.addEventListener('animationend', () => { el.remove(); cb?.(); }, { once: true });
+    // Fast dismissal without animation delay
+    const timer = setTimeout(() => { el.remove(); cb?.(); }, 150);
+    el.addEventListener('animationend', () => { clearTimeout(timer); el.remove(); cb?.(); }, { once: true });
   }
 
   /* ── All-done celebration ─────────────────────────────────────── */
@@ -499,7 +499,10 @@
   /* ── Wire up static buttons ───────────────────────────────────── */
   // Bind immediately after DOM is built; CSS load irrelevant for JS
   function bindButtons() {
-    $('ph-close')?.addEventListener('click', closePanel);
+    $('ph-close')?.addEventListener('click', () => {
+      // Quick close without delay
+      closePanel();
+    });
 
     $('btn-all')?.addEventListener('click', () => {
       const all = allTabs.every(t => selectedIds.has(t.id));
