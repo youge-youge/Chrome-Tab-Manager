@@ -421,50 +421,6 @@
   100% { transform: translate(var(--fw-x), var(--fw-y)) rotate(var(--fw-rot,0deg)) scaleX(0.2); opacity: 0; }
 }
 
-/* ═══════════════════ TOAST (confirm + undo) ═══════════════════ */
-.toast {
-  position: fixed;
-  right: 80px;
-  bottom: 22px;
-  z-index: 2147483647;
-  width: 268px;
-  background: var(--bg1);
-  border: 1px solid var(--b1);
-  border-radius: var(--r1);
-  padding: 13px 15px;
-  box-shadow: 0 18px 55px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.05);
-  transform-origin: bottom right;
-  animation: toast-in 0.36s var(--spring) forwards;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
-}
-.toast.out { animation: toast-out 0.25s ease forwards; }
-@keyframes toast-in  { from { transform: scale(0.78) translateY(16px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
-@keyframes toast-out { from { transform: scale(1) translateY(0); opacity: 1; } to { transform: scale(0.86) translateY(8px); opacity: 0; } }
-
-.toast-row1 { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
-.toast-label { font-size: 12px; font-weight: 600; color: var(--tx0); display: flex; align-items: center; gap: 6px; }
-.toast-num {
-  font-size: 26px; font-weight: 900; line-height: 1;
-  background: var(--red-g);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.toast-sub { font-size: 11px; color: var(--tx1); margin-bottom: 9px; }
-
-.toast-bar-wrap { height: 4px; background: var(--bg3); border-radius: 3px; overflow: hidden; margin-bottom: 9px; }
-.toast-bar { height: 100%; background: var(--red-g); border-radius: 3px; width: 100%; transition: width linear; }
-
-.toast-foot { display: flex; align-items: center; justify-content: space-between; }
-.toast-timer { font-size: 10px; color: var(--tx2); }
-.toast-undo {
-  padding: 4px 12px;
-  border-radius: 6px; border: 1px solid var(--b1);
-  background: var(--bg2); color: var(--tx0);
-  font-size: 11px; font-weight: 600; cursor: pointer;
-  transition: all var(--t1); font-family: inherit;
-}
-.toast-undo:hover { background: var(--bg3); border-color: var(--ac); color: var(--ac); }
-
 /* ═══════════════════ DONE BANNER ═══════════════════ */
 .done-overlay {
   position: absolute; inset: 0;

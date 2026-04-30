@@ -20,7 +20,6 @@
   let selectedIds = new Set();
   let query       = '';
   let panelOpen   = false;
-  let pending     = null;   // { timer, tick, toastEl }
 
   /* ── Tiny helpers ─────────────────────────────────────────────── */
   const mk  = (tag, cls) => { const e = document.createElement(tag); if (cls) e.className = cls; return e; };
@@ -237,15 +236,13 @@
     hd.querySelector('.gbtn-del').addEventListener('click', e => {
       e.stopPropagation();
       const ids = tabs.map(t => t.id);
-      showToast(ids, () => {
-        const cards = Array.from(grid.querySelectorAll('.card'));
-        fireAndRemove(cards, ids, () => {
-          allTabs = allTabs.filter(t => !ids.includes(t.id));
-          ids.forEach(id => selectedIds.delete(id));
-          g.classList.add('removing');
-          g.addEventListener('animationend', () => g.remove(), { once: true });
-          updateStats(allTabs.length); setBadge(allTabs.length); maybeCheer();
-        });
+      const cards = Array.from(grid.querySelectorAll('.card'));
+      fireAndRemove(cards, ids, () => {
+        allTabs = allTabs.filter(t => !ids.includes(t.id));
+        ids.forEach(id => selectedIds.delete(id));
+        g.classList.add('removing');
+        g.addEventListener('animationend', () => g.remove(), { once: true });
+        updateStats(allTabs.length); setBadge(allTabs.length); maybeCheer();
       });
     });
 
@@ -425,59 +422,6 @@
     });
   }
 
-  /* ── Toast ────────────────────────────────────────────────────── */
-  const DELAY = 3000;
-
-  function showToast(tabIds, onConfirm) {
-    if (pending) { clearTimeout(pending.timer); clearInterval(pending.tick); pending.toastEl?.remove(); pending = null; }
-
-    const toast = mk('div', 'toast');
-    toast.innerHTML = `
-      <div class="toast-row1">
-        <div class="toast-label">🗑️ 即将关闭</div>
-        <div class="toast-num">${tabIds.length}</div>
-      </div>
-      <div class="toast-sub">个标签页</div>
-      <div class="toast-bar-wrap"><div class="toast-bar" id="tbar"></div></div>
-      <div class="toast-foot">
-        <span class="toast-timer" id="ttimer">3 秒后关闭</span>
-        <button class="toast-undo" id="tundo">↩ 撤销</button>
-      </div>
-    `;
-    shadow.appendChild(toast);
-
-    // Reposition toast near FAB (toast is 268px wide, position above/left of FAB)
-    const fr = fab.getBoundingClientRect();
-    toast.style.cssText = `right:auto;bottom:auto;left:${Math.max(6, fr.left - 268 - 8)}px;top:${Math.max(6, fr.top - 130)}px;`;
-
-    requestAnimationFrame(() => {
-      const bar = $('tbar');
-      if (bar) { bar.style.transition = `width ${DELAY}ms linear`; bar.style.width = '0%'; }
-    });
-
-    let rem = DELAY;
-    const tick  = setInterval(() => { rem -= 100; const s = $('ttimer'); if (s) s.textContent = `${Math.ceil(rem/1000)} 秒后关闭`; }, 100);
-    const timer = setTimeout(() => {
-      clearInterval(tick);
-      dismissToast(toast, () => { onConfirm(); pending = null; });
-    }, DELAY);
-
-    $('tundo')?.addEventListener('click', () => {
-      clearTimeout(timer); clearInterval(tick);
-      dismissToast(toast); pending = null;
-    });
-
-    pending = { timer, tick, toastEl: toast };
-  }
-
-  function dismissToast(el, cb) {
-    if (!el) { cb?.(); return; }
-    el.classList.add('out');
-    // Fast dismissal without animation delay
-    const timer = setTimeout(() => { el.remove(); cb?.(); }, 150);
-    el.addEventListener('animationend', () => { clearTimeout(timer); el.remove(); cb?.(); }, { once: true });
-  }
-
   /* ── All-done celebration ─────────────────────────────────────── */
   function maybeCheer() {
     if (allTabs.length > 0) return;
@@ -513,19 +457,17 @@
     $('btn-sel')?.addEventListener('click', () => {
       if (!selectedIds.size) return;
       const ids   = [...selectedIds];
-      showToast(ids, () => {
-        const cards = [...shadow.querySelectorAll('.card')].filter(c => selectedIds.has(+c.dataset.id));
-        fireAndRemove(cards, ids, () => {
-          allTabs = allTabs.filter(t => !ids.includes(t.id));
-          ids.forEach(id => selectedIds.delete(id));
-          shadow.querySelectorAll('.group').forEach(g => {
-            if (!g.querySelector('.card')) {
-              g.classList.add('removing');
-              g.addEventListener('animationend', () => g.remove(), { once: true });
-            }
-          });
-          updateStats(allTabs.length); setBadge(allTabs.length); maybeCheer();
+      const cards = [...shadow.querySelectorAll('.card')].filter(c => selectedIds.has(+c.dataset.id));
+      fireAndRemove(cards, ids, () => {
+        allTabs = allTabs.filter(t => !ids.includes(t.id));
+        ids.forEach(id => selectedIds.delete(id));
+        shadow.querySelectorAll('.group').forEach(g => {
+          if (!g.querySelector('.card')) {
+            g.classList.add('removing');
+            g.addEventListener('animationend', () => g.remove(), { once: true });
+          }
         });
+        updateStats(allTabs.length); setBadge(allTabs.length); maybeCheer();
       });
     });
 
