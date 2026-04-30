@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tab Manager</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="header-left">
+        <span class="logo">⚡</span>
+        <h1 class="title">Tab Manager</h1>
+        <span class="tab-count" id="totalCount">0 个标签</span>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-ghost" id="selectAll">全选</button>
+        <button class="btn btn-danger" id="closeSelected" disabled>
+          关闭选中 (<span id="selectedCount">0</span>)
+        </button>
+      </div>
+    </header>
+
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="搜索标签页..." class="search-input">
+    </div>
+
+    <main class="groups-container" id="groupsContainer">
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <span>加载中...</span>
+      </div>
+    </main>
+
+    <footer class="footer" id="footer" style="display:none">
+      <span id="footerInfo"></span>
+      <button class="btn btn-danger-outline" id="closeAllBtn">关闭全部</button>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
